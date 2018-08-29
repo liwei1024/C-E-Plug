@@ -30,19 +30,19 @@ BOOL isKeyPressed(INT key)
 VOID keyDown(INT key)
 {
 	if (isKeyPressed(key) == FALSE)
-		keybd_event(key, MapVirtualKey(key, 0), 0, 0);
+		keybd_event(key, MapVirtualKey(key, 0), KEYEVENTF_EXTENDEDKEY | 0, 0);
 }
 
 VOID keyUp(INT key)
 {
 	if (isKeyPressed(key) == TRUE)
-		keybd_event(key, MapVirtualKey(key, 0), KEYEVENTF_KEYUP, 0);
+		keybd_event(key, MapVirtualKey(key, 0), KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
 }
 
 VOID doKeyPress(INT key, INT s)
 {
 	keyDown(key);
-	Sleep(s + createRandom(50, 100));
+	Sleep(s + createRandom(100, 150));
 	keyUp(key);
 	Sleep(100);
 }

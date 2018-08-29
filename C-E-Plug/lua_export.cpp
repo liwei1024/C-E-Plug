@@ -66,11 +66,54 @@ int guo_mu_ma(lua_State *L)
 	return 0;
 }
 
+
+int export_getWindowRect(lua_State *L)
+{
+	RECT rect;
+	if (GetWindowRect((HWND)(LONGLONG)lua_tonumber(L, 1), &rect) == FALSE) {
+		throw "getWindowRect 失败";
+	}
+	lua_newtable(L);//创建一个表格，放在栈
+	lua_pushstring(L, "top");//压入key
+	lua_pushinteger(L,rect.top);//压入value
+	lua_settable(L, -3);//弹出key,value，并设置到table里面去
+	lua_pushstring(L, "bottom");//压入key
+	lua_pushinteger(L, rect.bottom);//压入value
+	lua_settable(L, -3);//弹出key,value，并设置到table里面去
+	lua_pushstring(L, "left");//压入key
+	lua_pushinteger(L, rect.left);//压入value
+	lua_settable(L, -3);//弹出key,value，并设置到table里面去
+	lua_pushstring(L, "right");//压入key
+	lua_pushinteger(L, rect.right);//压入value
+	lua_settable(L, -3);//弹出key,value，并设置到table里面去
+	return 1;
+
+}
+
+int export_moveWindow(lua_State *L)
+{
+	if (lua_isnil(L, 1) == 1)
+		throw "error";
+	MoveWindow((HWND)(LONGLONG)lua_tonumber(L, 1), (int)lua_tointeger(L, 2), (int)lua_tointeger(L, 3), NULL, NULL, true);
+	return 0;
+}
+
+int export_showWindow(lua_State *L)
+{
+	if (lua_isnil(L, 1) == 1)
+		throw "error";
+	ShowWindow((HWND)(LONGLONG)lua_tonumber(L, 1), SW_SHOW);
+	return 0;
+}
+
 void lua_export()
 {
 	lua_State *lua_state = Exported.GetLuaState();
 	lua_register(lua_state, "keyDown", export_keyDown); 
 	lua_register(lua_state, "keyUp", export_keyUp);
-	lua_register(lua_state, "doKeyPress", export_doKeyPress);
+	lua_register(lua_state, "my_keybd_event", export_doKeyPress);
 	lua_register(lua_state, "guo_mu_ma", guo_mu_ma);
+	lua_register(lua_state, "getWindowRect", export_getWindowRect);
+	lua_register(lua_state, "moveWindow", export_moveWindow);
+	lua_register(lua_state, "showWindow", export_showWindow);
 }
