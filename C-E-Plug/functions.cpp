@@ -27,16 +27,31 @@ BOOL isKeyPressed(INT key)
 	return FALSE;
 }
 
+BYTE getSCan(INT key)
+{
+	BYTE sCan = MapVirtualKey(key, 0);
+	if (
+		key == VK_LEFT ||
+		key == VK_RIGHT ||
+		key == VK_DOWN ||
+		key == VK_UP
+		)
+	{
+		sCan += 0x80;
+	}
+	return sCan;
+}
+
 VOID keyDown(INT key)
 {
 	if (isKeyPressed(key) == FALSE)
-		keybd_event(key, MapVirtualKey(key, 0), KEYEVENTF_EXTENDEDKEY | 0, 0);
+		keybd_event(key, getSCan(key), KEYEVENTF_EXTENDEDKEY | 0, 0);
 }
 
 VOID keyUp(INT key)
 {
 	if (isKeyPressed(key) == TRUE)
-		keybd_event(key, MapVirtualKey(key, 0), KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+		keybd_event(key, getSCan(key), KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
 }
 
 VOID doKeyPress(INT key, INT s)
